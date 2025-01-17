@@ -13,8 +13,6 @@ public class BowlingBall : MonoBehaviour
     public GameObject pinPrefab; 
     public Transform pinsParent; 
 
-    private int score = 0;
-
     void Start()
     {
         rb = GetComponent<Rigidbody>();
@@ -47,25 +45,23 @@ public class BowlingBall : MonoBehaviour
         }
     }
 
-    private void OnTriggerEnter(Collider other)
-    {
-        if (other.CompareTag("Pin"))
-        {
-            score++;
-            Destroy(other.gameObject);
-        }
-    }
-
     public void ResetBall()
     {
         transform.position = initialPosition; 
         rb.velocity = Vector3.zero; 
         rb.angularVelocity = Vector3.zero; 
     }
+
     private void OnCollisionEnter(Collision collision)
     {
         if(collision.gameObject.tag == "Pin")
+        {
            GetComponent<AudioSource>().Play();
-           transform.position = new Vector3(transform.position.x, transform.position.y, transform.position.z);
+        }
+                
+        if(collision.gameObject.tag == "Wall")
+        {
+           ResetBall();
+        }
     }
 }
