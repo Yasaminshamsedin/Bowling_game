@@ -1,13 +1,25 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
+using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class BowlingBall : MonoBehaviour
 {
-      private Rigidbody rb;
+    private static ScoreManager scoreManager; 
+    private Rigidbody rb;
     private Vector3 dragStartPosition;
     private bool isDragging = false;
     private Vector3 initialPosition;
+
+    public int maxThrows = 3; 
+    private int currentThrows = 0;  
+    public TMP_Text Text; 
+    public GameObject losePanel; 
+    public GameObject winPanel; 
+    public Button nextLevelButton;  
+    public Button restartButton; 
 
     public float maxForce = 200f; 
     public GameObject pinPrefab; 
@@ -15,8 +27,17 @@ public class BowlingBall : MonoBehaviour
 
     void Start()
     {
+        scoreManager = GameObject.FindObjectOfType<ScoreManager>();
         rb = GetComponent<Rigidbody>();
         initialPosition = transform.position; 
+        losePanel.SetActive(false);
+        winPanel.SetActive(false);
+
+        nextLevelButton.onClick.AddListener(LoadNextLevel);
+        restartButton.onClick.AddListener(RestartGame);
+
+        nextLevelButton.gameObject.SetActive(false);
+        restartButton.gameObject.SetActive(false);
     }
 
     void Update()
@@ -50,6 +71,7 @@ public class BowlingBall : MonoBehaviour
         transform.position = initialPosition; 
         rb.velocity = Vector3.zero; 
         rb.angularVelocity = Vector3.zero; 
+        ThrowBall();
     }
 
     private void OnCollisionEnter(Collision collision)
@@ -63,5 +85,48 @@ public class BowlingBall : MonoBehaviour
         {
            ResetBall();
         }
+    }
+             void ThrowBall()
+        {
+            if(scoreManager.NumberScore() == 10)
+            {
+                ShowWinPanel();
+            }
+            if (currentThrows < maxThrows)
+            {  
+                currentThrows++;
+                if (currentThrows == maxThrows)
+                {
+                    if(scoreManager.NumberScore() != 10)
+                       ShowLosePanel();
+                       
+                }
+            }
+            else
+            {
+                ShowLosePanel(); 
+            }
+        }
+    void ShowLosePanel()
+    {
+        losePanel.SetActive(true);
+        restartButton.gameObject.SetActive(true);
+        Text.text="Game Over";
+        this.enabled = false; 
+    }
+    void ShowWinPanel()
+    {
+        winPanel.SetActive(true);        
+        nextLevelButton.gameObject.SetActive(true);
+        Text.text="You Win";
+        this.enabled = false; 
+    }
+        public void LoadNextLevel()
+    {
+        SceneManager.LoadScene("GameScene2");
+    }
+        public void RestartGame()
+    {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 }

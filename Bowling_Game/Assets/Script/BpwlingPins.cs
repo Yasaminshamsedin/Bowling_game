@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class BpwlingPins : MonoBehaviour
 {
-private static ScoreManager scoreManager; // ارجاع به ScoreManager
+private static ScoreManager scoreManager; 
 
     private void Start()
     {
@@ -24,7 +24,7 @@ private static ScoreManager scoreManager; // ارجاع به ScoreManager
     private void DestroyPin()
     {
 
-        scoreManager.IncrementScore(); // افزایش امتیا
+        scoreManager.IncrementScore(); 
         Destroy(gameObject);
     }
 }
