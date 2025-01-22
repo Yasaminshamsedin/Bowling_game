@@ -7,9 +7,11 @@ using UnityEngine.UI;
 
 public class BowlingBall : MonoBehaviour
 {
+    public float speed = 10f; 
+    private Vector3 startMousePosition;
+    private Vector3 endMousePosition;
     private static ScoreManager scoreManager; 
     private Rigidbody rb;
-    private Vector3 dragStartPosition;
     private bool isDragging = false;
     private Vector3 initialPosition;
 
@@ -45,25 +47,27 @@ public class BowlingBall : MonoBehaviour
         if (Input.GetMouseButtonDown(0))
         {
             isDragging = true;
-            dragStartPosition = Input.mousePosition;
+            startMousePosition = Input.mousePosition;
         }
 
-        if (isDragging)
+        if (Input.GetMouseButton(0) && isDragging)
         {
-            Vector3 currentMousePosition = Input.mousePosition;
-            Vector3 dragVector = dragStartPosition - currentMousePosition;
-
-            float forceMagnitude = Mathf.Clamp(dragVector.magnitude / 100f, 0, maxForce);
-            Vector3 forceDirection = new Vector3(dragVector.x, 0, dragVector.y).normalized;
-
-            rb.AddForce(forceDirection * forceMagnitude);
+            endMousePosition = Input.mousePosition;
         }
 
-        if (Input.GetMouseButtonUp(0))
+        if (Input.GetMouseButtonUp(0) && isDragging)
         {
             isDragging = false;
-            rb.AddForce(-rb.velocity * 10f, ForceMode.Impulse); 
+
+            Vector3 mouseDelta = endMousePosition - startMousePosition;
+
+            Vector3 forceDirection = new Vector3(mouseDelta.x, 0, mouseDelta.y).normalized;
+
+            Vector3 force = forceDirection * speed;
+
+            rb.AddForce(force, ForceMode.Impulse);
         }
+
     }
 
     public void ResetBall()
