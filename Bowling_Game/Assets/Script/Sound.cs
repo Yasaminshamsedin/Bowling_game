@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 public class Sound : MonoBehaviour
 {
-  public AudioClip backgroundMusic; 
+    public AudioClip backgroundMusic; 
     private AudioSource audioSource;
     private bool isPlaying = false;
 

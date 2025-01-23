@@ -7,7 +7,7 @@ using UnityEngine.UI;
 
 public class BowlingBall : MonoBehaviour
 {
-    public float speed = 10f; 
+    public float speed = 200f; 
     private Vector3 startMousePosition;
     private Vector3 endMousePosition;
     private static ScoreManager scoreManager; 
@@ -22,6 +22,7 @@ public class BowlingBall : MonoBehaviour
     public GameObject winPanel; 
     public Button nextLevelButton;  
     public Button restartButton; 
+    public GameObject panel;
 
     public float maxForce = 200f; 
     public GameObject pinPrefab; 
@@ -34,6 +35,7 @@ public class BowlingBall : MonoBehaviour
         initialPosition = transform.position; 
         losePanel.SetActive(false);
         winPanel.SetActive(false);
+        panel.SetActive(false);
 
         nextLevelButton.onClick.AddListener(LoadNextLevel);
         restartButton.onClick.AddListener(RestartGame);
@@ -113,14 +115,14 @@ public class BowlingBall : MonoBehaviour
         }
     void ShowLosePanel()
     {
-        losePanel.SetActive(true);
+        panel.SetActive(true);
         restartButton.gameObject.SetActive(true);
         Text.text="Game Over";
         this.enabled = false; 
     }
     void ShowWinPanel()
     {
-        winPanel.SetActive(true);        
+        panel.SetActive(true);        
         nextLevelButton.gameObject.SetActive(true);
         Text.text="You Win";
         this.enabled = false; 
