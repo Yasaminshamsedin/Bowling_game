@@ -17,16 +17,11 @@ public class BowlingBall : MonoBehaviour
 
     public int maxThrows = 3; 
     private int currentThrows = 0;  
-    public TMP_Text Text; 
     public GameObject losePanel; 
     public GameObject winPanel; 
     public Button nextLevelButton;  
     public Button restartButton; 
-    public GameObject panel;
-
-    public float maxForce = 200f; 
-    public GameObject pinPrefab; 
-    public Transform pinsParent; 
+    public GameObject[] health1;
 
     void Start()
     {
@@ -35,7 +30,6 @@ public class BowlingBall : MonoBehaviour
         initialPosition = transform.position; 
         losePanel.SetActive(false);
         winPanel.SetActive(false);
-        panel.SetActive(false);
 
         nextLevelButton.onClick.AddListener(LoadNextLevel);
         restartButton.onClick.AddListener(RestartGame);
@@ -77,7 +71,6 @@ public class BowlingBall : MonoBehaviour
         transform.position = initialPosition; 
         rb.velocity = Vector3.zero; 
         rb.angularVelocity = Vector3.zero; 
-        ThrowBall();
     }
 
     private void OnCollisionEnter(Collision collision)
@@ -90,41 +83,38 @@ public class BowlingBall : MonoBehaviour
         if(collision.gameObject.tag == "Wall")
         {
            ResetBall();
+           ThrowBall();
         }
     }
-             void ThrowBall()
-        {
+
+     public void ThrowBall()
+    {
+        UpdateLivesDisplay();
+        if (currentThrows <= maxThrows)
+        {  
+            currentThrows++;
             if(scoreManager.NumberScore() == 10)
             {
-                ShowWinPanel();
+                 ShowWinPanel();
             }
-            if (currentThrows < maxThrows)
-            {  
-                currentThrows++;
-                if (currentThrows == maxThrows)
-                {
-                    if(scoreManager.NumberScore() != 10)
-                       ShowLosePanel();
-                       
-                }
-            }
-            else
+            else if (currentThrows == maxThrows)
             {
-                ShowLosePanel(); 
+                if(scoreManager.NumberScore() != 10)
+                 ShowLosePanel();         
             }
         }
+     }
+
     void ShowLosePanel()
     {
-        panel.SetActive(true);
+        losePanel.SetActive(true);
         restartButton.gameObject.SetActive(true);
-        Text.text="Game Over";
         this.enabled = false; 
     }
     void ShowWinPanel()
     {
-        panel.SetActive(true);        
+        winPanel.SetActive(true);        
         nextLevelButton.gameObject.SetActive(true);
-        Text.text="You Win";
         this.enabled = false; 
     }
         public void LoadNextLevel()
@@ -134,5 +124,13 @@ public class BowlingBall : MonoBehaviour
         public void RestartGame()
     {
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+    }
+
+        void UpdateLivesDisplay()
+    {
+        if (health1.Length > maxThrows - currentThrows - 1)
+            {
+                Destroy(health1[maxThrows - currentThrows - 1]);
+            }
     }
 }
