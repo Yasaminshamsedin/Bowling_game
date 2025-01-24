@@ -125,7 +125,10 @@ public class BowlingBall : MonoBehaviour
     {
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
-
+        public void ExitGame()
+    {
+        Application.Quit();
+    }
         void UpdateLivesDisplay()
     {
         if (health1.Length > maxThrows - currentThrows - 1)
